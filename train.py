@@ -75,7 +75,9 @@ def train(log_dir, args):
   saver = tf.train.Saver(max_to_keep=5, keep_checkpoint_every_n_hours=2)
 
   # Train!
-  with tf.Session() as sess:
+  config = tf.ConfigProto()
+  config.gpu_options.allow_growth=True
+  with tf.Session(config=config) as sess:
     try:
       summary_writer = tf.summary.FileWriter(log_dir, sess.graph)
       sess.run(tf.global_variables_initializer())
@@ -129,7 +131,7 @@ def train(log_dir, args):
 
 def main():
   parser = argparse.ArgumentParser()
-  parser.add_argument('--base_dir', default=os.path.expanduser('.'))
+  parser.add_argument('--base_dir', default=os.path.dirname(os.path.abspath(__file__)))
   parser.add_argument('--input', default='training/train.txt')
   parser.add_argument('--model', default='tacotron')
   parser.add_argument('--name', help='Name of the run. Used for logging. Defaults to model name.')
